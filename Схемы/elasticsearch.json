@@ -1,0 +1,67 @@
+{
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "name": {
+        "type": "text",
+        "analyzer": "russian",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "russian"
+      },
+      "term": {
+        "type": "text"
+      },
+      "department": {
+        "type": "text",
+        "analyzer": "russian"
+      },
+      "specialty": {
+        "type": "text", 
+        "analyzer": "russian"
+      },
+      "requirments": {
+        "type": "boolean"
+      }
+    }
+  },
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "russian": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "russian_stop", "russian_stemmer"]
+        }
+      },
+      "filter": {
+        "russian_stop": {
+          "type": "stop",
+          "stopwords": "_russian_"
+        },
+        "russian_stemmer": {
+          "type": "stemmer",
+          "language": "russian"
+        }
+      }
+    }
+  },
+  "sample_data": [
+    {
+      "id": 1,
+      "name": "Проектирование архитектуры программного обеспечения",
+      "description": "Курс посвящен изучению принципов и методов проектирования архитектуры программного обеспечения. Рассматриваются различные архитектурные паттерны, принципы SOLID, микросервисная архитектура.",
+      "term": "2025-2026",
+      "department": "Факультет разработки ПО", 
+      "specialty": "Информационные системы и технологии",
+      "requirments": true
+    }
+  ]
+}
