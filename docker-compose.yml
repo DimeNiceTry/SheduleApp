@@ -2,12 +2,12 @@ version: "3.9"
 
 services:
   csharp-generator:
-    build: 
+    build:
       context: .
       dockerfile: ./University Schedule Generator/Dockerfile
     container_name: csharp-generator
     ports:
-      - "8000:8080"  # Используем тот же порт 8000 для совместимости
+      - "8000:8080"  
     depends_on:
       postgres:
         condition: service_healthy
@@ -22,7 +22,7 @@ services:
     environment:
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=university;Username=postgres;Password=postgres"
       RedisOptions__Configuration: "redis:6379"
-      ElasticsearchOptions__Uri: "http://elasticsearch:9200"  
+      ElasticsearchOptions__Uri: "http://elasticsearch:9200"
       MongoDbSettings__ConnectionString: "mongodb://admin:password@mongo:27017/?authSource=admin"
       MongoDbSettings__Database: "university"
       Neo4jOptions__Uri: "bolt://neo4j:7687"
@@ -30,6 +30,57 @@ services:
       Neo4jOptions__Password: "password"
     volumes:
       - ./logs:/app/logs
+    restart: unless-stopped
+
+  python-lab1:
+    build:
+      context: .
+      dockerfile: ./University Schedule Lab1 Python/Dockerfile
+    container_name: python-lab1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_started
+    environment:
+      LAB1_POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/university
+      LAB1_REDIS_URL: redis://redis:6379/0
+      LAB1_ELASTIC_URL: http://elasticsearch:9200
+      LAB1_ELASTIC_INDEX: materials
+      LAB1_NEO4J_URI: bolt://neo4j:7687
+      LAB1_NEO4J_USER: neo4j
+      LAB1_NEO4J_PASSWORD: password
+      LAB1_REPORT_LIMIT: "10"
+      LAB1_ELASTIC_SEARCH_LIMIT: "3000"
+    ports:
+      - "8100:8080"
+    volumes:
+      - ./logs/python-lab1:/app/logs
+    restart: unless-stopped
+
+  python-gateway:
+    build:
+      context: .
+      dockerfile: ./University Schedule Gateway Python/Dockerfile
+    container_name: python-gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+      python-lab1:
+        condition: service_started
+    environment:
+      GATEWAY_POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/university
+      GATEWAY_JWT_SECRET: )wmbpam3f%_qe_kg*no-+^nc2dzz(z@d-ijc1mt&ua5^mb&mb+
+      GATEWAY_JWT_EXPIRE_HOURS: "12"
+      GATEWAY_LAB1_SERVICE_URL: http://python-lab1:8080
+    ports:
+      - "8200:8080"
+    volumes:
+      - ./logs/python-gateway:/app/logs
     restart: unless-stopped
 
   postgres:
@@ -101,8 +152,8 @@ services:
       - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
       - NEO4J_dbms_connector_http_listen__address=0.0.0.0:7474
     ports:
-      - "7474:7474"  # HTTP
-      - "7687:7687"  # Bolt
+      - "7474:7474"  
+      - "7687:7687"  
     volumes:
       - neo4j_data:/data
       - ./logs/neo4j:/logs
