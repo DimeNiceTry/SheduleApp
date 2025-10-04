@@ -73,7 +73,7 @@ services:
       python-lab1:
         condition: service_started
     environment:
-      GATEWAY_POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/university
+      GATEWAY_POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/gateway_auth
       GATEWAY_JWT_SECRET: )wmbpam3f%_qe_kg*no-+^nc2dzz(z@d-ijc1mt&ua5^mb&mb+
       GATEWAY_JWT_EXPIRE_HOURS: "12"
       GATEWAY_LAB1_SERVICE_URL: http://python-lab1:8080

@@ -1,8 +1,8 @@
-using University_Schedule_Generator.Services;
 using Microsoft.EntityFrameworkCore;
-using Elastic.Clients.Elasticsearch.Security;
+using University_Schedule_Lab1;
+using Group = System.Text.RegularExpressions.Group;
 
-namespace University_Schedule_Generator;
+namespace University_Schedule_Lab1.Data;
 
 public class ApplicationContext : DbContext
 {
@@ -17,10 +17,9 @@ public class ApplicationContext : DbContext
     public DbSet<Student> Students { get; set; } = null!;
     public DbSet<Visit> Visits { get; set; } = null!;
     public DbSet<Schedule> Schedules { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
-        Database.EnsureCreated();
+        Database.EnsureCreated(); // создаем базу данных при первом обращении
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

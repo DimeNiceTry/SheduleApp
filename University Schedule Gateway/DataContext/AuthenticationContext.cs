@@ -1,10 +1,10 @@
-using University_Schedule_Generator.Services;
 using Microsoft.EntityFrameworkCore;
-using Elastic.Clients.Elasticsearch.Security;
+using University_Schedule_Gateway.Models;
+using University_Schedule_Lab1;
 
-namespace University_Schedule_Generator;
+namespace University_Schedule_Gateway;
 
-public class ApplicationContext : DbContext
+public class AuthenticationContext : DbContext
 {
     public DbSet<University> Universities { get; set; } = null!;
     public DbSet<Institute> Institutes { get; set; } = null!;
@@ -18,12 +18,17 @@ public class ApplicationContext : DbContext
     public DbSet<Visit> Visits { get; set; } = null!;
     public DbSet<Schedule> Schedules { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+    public AuthenticationContext(DbContextOptions<AuthenticationContext> options) : base(options)
     {
-        Database.EnsureCreated();
+        Database.EnsureCreated(); // создаем базу данных при первом обращении
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        // Настройка уникального индекса для Username
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Name)
+            .IsUnique();
     }
 }
