@@ -22,5 +22,6 @@ public static class ApiExtensions
     public static void AddGeneratorEndPoints(this IEndpointRouteBuilder app)
     {
         app.MapGeneratorEndpoints();
+        app.MapCleanupEndpoints();
     }
 }

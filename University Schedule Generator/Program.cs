@@ -46,6 +46,8 @@ services.AddScoped<IDataSaver<GeneratedData>, RedisDataSaver>();
 services.AddScoped<IDataSaver<GeneratedData>, ElasticDataSaver>();
 //сервис сохранения мусора
 services.AddScoped<DataSaverService>();
+//сервис очистки данных
+services.AddScoped<DataCleanupService>();
 
 
 var app = builder.Build();

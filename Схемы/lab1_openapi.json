@@ -1,0 +1,297 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "University Schedule Lab1 Python API",
+    "description": "Analytical service that prepares low attendance reports for students. The service analyzes lecture attendance data across multiple databases (PostgreSQL, Elasticsearch, Neo4j, Redis) and generates comprehensive reports showing students with the lowest attendance rates.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "url": "http://localhost:8100"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8100",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "health",
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "reports",
+      "description": "Attendance and analytical reports"
+    }
+  ],
+  "paths": {
+    "/healthz": {
+      "get": {
+        "tags": ["health"],
+        "summary": "Health check",
+        "description": "Returns the health status of the service",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lab1": {
+      "get": {
+        "tags": ["reports"],
+        "summary": "Retrieve the bottom ten students by lecture attendance",
+        "description": "Returns a report of the 10 students with the lowest attendance for lectures matching the search term within the specified date range. The service queries:\n- **Elasticsearch** for lecture materials matching the search term\n- **Neo4j** for lecture graph relationships\n- **PostgreSQL** for schedule and visit data\n- **Redis** for student information cache",
+        "operationId": "getLowAttendanceReport",
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "required": false,
+            "description": "Term or phrase to match within lecture materials (uses Elasticsearch full-text search)",
+            "schema": {
+              "type": "string",
+              "default": "архитектура",
+              "example": "архитектура программного обеспечения",
+              "examples": [
+                "архитектура",
+                "программирование",
+                "базы данных"
+              ]
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive start of the reporting period (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "2025-09-01T00:00:00",
+              "example": "2025-09-01T00:00:00Z"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive end of the reporting period (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "2025-12-31T23:59:59",
+              "example": "2025-12-31T23:59:59Z"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with attendance report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LowAttendanceResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "student": {
+                        "id": 42,
+                        "full_name": "Иванов Иван Иванович",
+                        "group_id": 5,
+                        "date_of_recipient": "2024-09-01T00:00:00Z"
+                      },
+                      "attendance_percentage": 45.5,
+                      "attended_lectures": 10,
+                      "total_lectures": 22,
+                      "report_start": "2025-09-01T00:00:00Z",
+                      "report_end": "2025-12-31T23:59:59Z",
+                      "search_term": "архитектура"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                },
+                "example": {
+                  "detail": "endDate must be greater than startDate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error - Invalid request format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "StudentInfo": {
+        "type": "object",
+        "required": ["id", "full_name"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Student identifier",
+            "example": 42
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Student full name",
+            "example": "Иванов Иван Иванович"
+          },
+          "group_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Group identifier",
+            "example": 5
+          },
+          "date_of_recipient": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Enrollment date in ISO format",
+            "example": "2024-09-01T00:00:00Z"
+          }
+        }
+      },
+      "LowAttendanceItem": {
+        "type": "object",
+        "required": [
+          "student",
+          "attendance_percentage",
+          "attended_lectures",
+          "total_lectures",
+          "report_start",
+          "report_end",
+          "search_term"
+        ],
+        "properties": {
+          "student": {
+            "$ref": "#/components/schemas/StudentInfo"
+          },
+          "attendance_percentage": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Attendance percentage for the period (0-100)",
+            "example": 45.5
+          },
+          "attended_lectures": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of attended lectures",
+            "example": 10
+          },
+          "total_lectures": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total lectures in the period",
+            "example": 22
+          },
+          "report_start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Report period start in ISO format",
+            "example": "2025-09-01T00:00:00Z"
+          },
+          "report_end": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Report period end in ISO format",
+            "example": "2025-12-31T23:59:59Z"
+          },
+          "search_term": {
+            "type": "string",
+            "description": "Matched term or phrase from Elasticsearch search",
+            "example": "архитектура"
+          }
+        }
+      },
+      "LowAttendanceResponse": {
+        "type": "object",
+        "required": ["results"],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LowAttendanceItem"
+            },
+            "description": "List of students with lowest attendance (max 10 items)"
+          }
+        }
+      },
+      "HTTPError": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Error message",
+            "example": "endDate must be greater than startDate"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "loc": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Location of the error"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "Error message"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Error type"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

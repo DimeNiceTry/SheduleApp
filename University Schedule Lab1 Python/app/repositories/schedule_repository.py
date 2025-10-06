@@ -16,7 +16,7 @@ class ScheduleRepository:
             return
         with self._pool.connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT to_regclass('public.""Schedules""') IS NOT NULL")
+                cur.execute("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'Schedules')")
                 exists_pascal = cur.fetchone()[0]
         if exists_pascal:
             self._table_name = '"Schedules"'

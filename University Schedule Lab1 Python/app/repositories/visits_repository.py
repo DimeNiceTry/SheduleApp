@@ -1,4 +1,4 @@
-from typing import Iterable, List
+﻿from typing import Iterable, List
 
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
@@ -15,7 +15,13 @@ class VisitsRepository:
             return
         with self._pool.connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT to_regclass('public.""Visits""') IS NOT NULL")
+                cur.execute("""
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.tables 
+                        WHERE table_schema = 'public' 
+                        AND table_name = 'Visits'
+                    )
+                """)
                 exists_pascal = cur.fetchone()[0]
         if exists_pascal:
             self._table_name = '"Visits"'

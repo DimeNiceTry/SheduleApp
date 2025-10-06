@@ -68,9 +68,24 @@ async def health_check() -> dict[str, str]:
     tags=["reports"],
 )
 async def get_low_attendance_report(
-    search_term: str = Query(..., alias="searchTerm", description="Term or phrase to match within lecture materials"),
-    start_date: datetime = Query(..., alias="startDate", description="Inclusive start of the reporting period"),
-    end_date: datetime = Query(..., alias="endDate", description="Inclusive end of the reporting period"),
+    search_term: str = Query(
+        default="архитектура",
+        alias="searchTerm",
+        description="Term or phrase to match within lecture materials",
+        examples=["архитектура", "программирование", "базы данных"]
+    ),
+    start_date: datetime = Query(
+        default=datetime(2025, 9, 1, 0, 0, 0),
+        alias="startDate",
+        description="Inclusive start of the reporting period",
+        examples=["2025-09-01T00:00:00Z"]
+    ),
+    end_date: datetime = Query(
+        default=datetime(2025, 12, 31, 23, 59, 59),
+        alias="endDate",
+        description="Inclusive end of the reporting period",
+        examples=["2025-12-31T23:59:59Z"]
+    ),
 ) -> LowAttendanceResponse:
     if end_date < start_date:
         raise HTTPException(status_code=400, detail="endDate must be greater than startDate")
