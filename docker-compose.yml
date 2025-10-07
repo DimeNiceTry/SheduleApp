@@ -83,6 +83,35 @@ services:
       - ./logs/python-lab2:/app/logs
     restart: unless-stopped
 
+  python-lab3:
+    build:
+      context: .
+      dockerfile: ./University Schedule Lab3 Python/Dockerfile
+    container_name: python-lab3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+    environment:
+      LAB3_MONGO_URI: mongodb://admin:password@mongo:27017/?authSource=admin
+      LAB3_MONGO_DB: university
+      LAB3_REDIS_HOST: redis
+      LAB3_REDIS_PORT: "6379"
+      LAB3_POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/university
+      LAB3_NEO4J_URI: bolt://neo4j:7687
+      LAB3_NEO4J_USER: neo4j
+      LAB3_NEO4J_PASSWORD: password
+    ports:
+      - "8120:8120"
+    volumes:
+      - ./logs/python-lab3:/app/logs
+    restart: unless-stopped
+
   python-gateway:
     build:
       context: .
@@ -93,11 +122,17 @@ services:
         condition: service_healthy
       python-lab1:
         condition: service_started
+      python-lab2:
+        condition: service_started
+      python-lab3:
+        condition: service_started
     environment:
       GATEWAY_POSTGRES_DSN: postgresql://postgres:postgres@postgres:5432/gateway_auth
       GATEWAY_JWT_SECRET: )wmbpam3f%_qe_kg*no-+^nc2dzz(z@d-ijc1mt&ua5^mb&mb+
       GATEWAY_JWT_EXPIRE_HOURS: "12"
       GATEWAY_LAB1_SERVICE_URL: http://python-lab1:8080
+      GATEWAY_LAB2_SERVICE_URL: http://python-lab2:8080
+      GATEWAY_LAB3_SERVICE_URL: http://python-lab3:8120
     ports:
       - "8200:8080"
     volumes:

@@ -70,11 +70,39 @@ curl "http://localhost:8110/lab2?year=2025&courseName=Базы%20данных"
 
 **Описание:** Возвращает информацию о курсе, всех его лекциях в заданном году и количестве студентов для каждой лекции. Использует PostgreSQL для получения курсов и лекций, Neo4j для подсчета студентов по группам.
 
-### API Gateway
+### API Gateway (JWT Auth)
 
-**Swagger:** http://localhost:8200/docs - интерфейс с запросами для регистрации и логина по токену
+**Swagger:** http://localhost:8200/docs  
+**Документация:** [JWT Testing Guide](JWT_TESTING_GUIDE.md)  
+**База данных:** `gateway_auth` (PostgreSQL)
 
-**Примечание:** Регистрация в процессе отладки
+**Эндпоинты авторизации:**
+- `POST /register` - Регистрация пользователя
+- `POST /login` - Вход и получение JWT токена
+
+**Защищенные эндпоинты (требуют JWT):**
+- `GET /lab1?searchTerm={term}&startDate={date}&endDate={date}` - Проксирование запросов к Lab1
+
+**Пример использования:**
+```powershell
+# 1. Регистрация
+$body = @{name="user"; password="pass"} | ConvertTo-Json
+Invoke-RestMethod "http://localhost:8200/register" -Method POST -Body $body -ContentType "application/json"
+
+# 2. Получение токена
+$response = Invoke-WebRequest "http://localhost:8200/login" -Method POST -Body $body -ContentType "application/json"
+$token = ($response.Content | ConvertFrom-Json).access_token
+
+# 3. Запрос с токеном
+$headers = @{Authorization="Bearer $token"}
+Invoke-RestMethod "http://localhost:8200/lab1?searchTerm=код&startDate=2025-09-01T00:00:00Z&endDate=2025-12-31T23:59:59Z" -Headers $headers
+```
+
+**Особенности:**
+- ✅ JWT токены (HS256) с временем жизни 12 часов
+- ✅ Bcrypt хеширование паролей
+- ✅ HTTP-only cookies для браузера
+- ✅ Bearer Token для API клиентов
 
 ## 🎨 UI Инструменты для работы с базами данных
 
