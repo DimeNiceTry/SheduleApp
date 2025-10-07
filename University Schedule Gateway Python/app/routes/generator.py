@@ -270,7 +270,7 @@ async def proxy_generate(request: GenerateRequest = None):
     
     try:
         response = await _http_client.post(
-            "/api/v1/generate",
+            "/generate",
             json=request.model_dump(by_alias=True),
             timeout=300.0  # 5 минут на генерацию
         )
@@ -315,7 +315,7 @@ async def proxy_cleanup():
     
     try:
         response = await _http_client.delete(
-            "/api/v1/cleanup",
+            "/cleanup",
             timeout=60.0  # 1 минута на очистку
         )
     except httpx.RequestError as exc:
