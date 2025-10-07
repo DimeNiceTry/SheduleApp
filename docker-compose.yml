@@ -120,6 +120,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      csharp-generator:
+        condition: service_started
       python-lab1:
         condition: service_started
       python-lab2:
@@ -133,6 +135,7 @@ services:
       GATEWAY_LAB1_SERVICE_URL: http://python-lab1:8080
       GATEWAY_LAB2_SERVICE_URL: http://python-lab2:8080
       GATEWAY_LAB3_SERVICE_URL: http://python-lab3:8120
+      GATEWAY_GENERATOR_SERVICE_URL: http://csharp-generator:8080
     ports:
       - "8200:8080"
     volumes:

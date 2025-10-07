@@ -10,6 +10,7 @@ from .routes import auth as auth_routes
 from .routes import lab1 as lab1_routes
 from .routes import lab2 as lab2_routes
 from .routes import lab3 as lab3_routes
+from .routes import generator as generator_routes
 
 settings = get_settings()
 
@@ -32,19 +33,24 @@ async def lifespan(app: FastAPI):
     lab3_client = httpx.AsyncClient(base_url=settings.lab3_service_url, timeout=30.0)
     lab3_routes.configure_http_client(lab3_client)
     
+    # HTTP клиент для Generator
+    generator_client = httpx.AsyncClient(base_url=settings.generator_service_url, timeout=300.0)
+    generator_routes.configure_http_client(generator_client)
+    
     try:
         yield
     finally:
         await lab1_client.aclose()
         await lab2_client.aclose()
         await lab3_client.aclose()
+        await generator_client.aclose()
         shutdown_pool()
 
 
 app = FastAPI(
     title="University Schedule Gateway Python API",
     version="1.0.0",
-    description="API gateway with JWT authentication. Provides proxy access to Lab1, Lab2 and Lab3 services.",
+    description="API gateway with JWT authentication. Provides proxy access to Lab1, Lab2, Lab3 and Generator services.",
     lifespan=lifespan,
 )
 
@@ -60,6 +66,7 @@ app.include_router(auth_routes.router)
 app.include_router(lab1_routes.router)
 app.include_router(lab2_routes.router)
 app.include_router(lab3_routes.router)
+app.include_router(generator_routes.router)
 
 
 @app.get("/healthz", tags=["health"])
