@@ -26,6 +26,14 @@ public class MongoDataSaver : IDataSaver<GeneratedData>
         public List<MongoInstitute> institutes { get; set; } = new();
     }
 
+    private class MongoGroup
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public int department_id { get; set; }
+        public int year { get; set; }
+    }
+
     private readonly IMongoDatabase _mongoDatabase;
     private readonly ILogger<MongoDataSaver> _logger;
 
@@ -69,6 +77,24 @@ public class MongoDataSaver : IDataSaver<GeneratedData>
         {
             _logger.LogWarning("No University structure to save to MongoDB.");
         }
+        // Persist flattened groups collection for Lab3 lookups
+        var groupsCollection = _mongoDatabase.GetCollection<MongoGroup>("groups");
+        foreach (var g in data.Groups)
+        {
+            var doc = new MongoGroup
+            {
+                id = g.Id,
+                name = g.Name,
+                department_id = g.DepartmentId,
+                year = g.StartYear.Year
+            };
+            await groupsCollection.ReplaceOneAsync(
+                Builders<MongoGroup>.Filter.Eq(x => x.id, g.Id),
+                doc,
+                new ReplaceOptions { IsUpsert = true }
+            );
+        }
+
         return new SaveResult(true, "University saved to MongoDB.");
     }
 

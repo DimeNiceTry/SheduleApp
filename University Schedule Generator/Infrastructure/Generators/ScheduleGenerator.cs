@@ -193,7 +193,15 @@ public class ScheduleGenerator
         while (schedules.Count < count && generationAttempts < count * maxGenerationAttempts)
         {
             generationAttempts++;
-            Lecture randomLecture = _faker.PickRandom(availableLectures);
+            // restrict lectures to courses of the group's department
+            var eligibleLectures = availableLectures
+                .Where(l => l != null && l.Course != null && l.Course.DepartmentId == group.DepartmentId)
+                .ToList();
+            if (!eligibleLectures.Any())
+            {
+                break; // no lectures for this group's department
+            }
+            Lecture randomLecture = _faker.PickRandom(eligibleLectures);
             try
             {
                 // Пытаемся сгенерировать запись, используя основной метод, который проверит Term
@@ -247,7 +255,15 @@ public class ScheduleGenerator
         {
             generationAttempts++;
             Group randomGroup = _faker.PickRandom(availableGroups);
-            Lecture randomLecture = _faker.PickRandom(availableLectures);
+            // restrict lectures to the selected group's department
+            var eligibleLectures2 = availableLectures
+                .Where(l => l != null && l.Course != null && l.Course.DepartmentId == randomGroup.DepartmentId)
+                .ToList();
+            if (!eligibleLectures2.Any())
+            {
+                continue; // try another group; this one has no matching lectures
+            }
+            Lecture randomLecture = _faker.PickRandom(eligibleLectures2);
             try
             {
                 var scheduleEntry = Generate(randomGroup, randomLecture, minDate, maxDate);

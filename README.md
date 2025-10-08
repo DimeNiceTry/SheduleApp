@@ -54,6 +54,8 @@ docker-compose up -d
 curl "http://localhost:8100/lab1?searchTerm=архитектура&startDate=2025-09-01T00:00:00Z&endDate=2025-12-31T23:59:59Z"
 ```
 
+LAB1_UNIQUE_TOKEN_2025
+
 ### Python Lab2 API
 
 **Swagger:** http://localhost:8110/docs  
@@ -69,6 +71,10 @@ curl "http://localhost:8110/lab2?year=2025&courseName=Базы%20данных"
 ```
 
 **Описание:** Возвращает информацию о курсе, всех его лекциях в заданном году и количестве студентов для каждой лекции. Использует PostgreSQL для получения курсов и лекций, Neo4j для подсчета студентов по группам.
+
+
+### Lab3
+**ДО-02-23**
 
 ### API Gateway (JWT Auth)
 

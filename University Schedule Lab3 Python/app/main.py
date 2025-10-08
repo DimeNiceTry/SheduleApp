@@ -1,4 +1,7 @@
-from fastapi import FastAPI, Query
+import logging
+import os
+import uuid
+from fastapi import FastAPI, Query, Request
 from contextlib import asynccontextmanager
 from .database import DatabaseConnections
 from .repositories.group_repository import GroupRepository
@@ -12,6 +15,13 @@ from .models.lab3_models import GroupReportResponse
 
 
 # Глобальное подключение к БД
+LOG_LEVEL = os.getenv("LAB3_LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=LOG_LEVEL,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+logger = logging.getLogger("lab3")
+
 db_connections = DatabaseConnections()
 
 
@@ -19,9 +29,11 @@ db_connections = DatabaseConnections()
 async def lifespan(app: FastAPI):
     """Управление жизненным циклом приложения"""
     # Подключение к БД при старте
+    logger.info("Lab3 startup: connecting databases")
     await db_connections.connect()
     yield
     # Отключение от БД при завершении
+    logger.info("Lab3 shutdown: closing databases")
     await db_connections.close()
 
 
@@ -31,6 +43,15 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+
+@app.middleware("http")
+async def add_request_id(request: Request, call_next):
+    request_id = uuid.uuid4().hex[:8]
+    request.state.request_id = request_id
+    response = await call_next(request)
+    response.headers["X-Request-ID"] = request_id
+    return response
 
 
 @app.get("/", tags=["Health"])
@@ -57,7 +78,7 @@ async def get_group_report(
     # Инициализация репозиториев
     mongo_db = db_connections.get_mongo_db()
     
-    group_repo = GroupRepository(mongo_db)
+    group_repo = GroupRepository(mongo_db, db_connections.postgres_conn)
     student_repo = StudentRepository(db_connections.redis_client)
     course_repo = CourseRepository(db_connections.postgres_conn)
     lecture_repo = LectureRepository(

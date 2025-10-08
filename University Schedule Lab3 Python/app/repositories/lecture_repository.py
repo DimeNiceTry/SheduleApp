@@ -1,6 +1,7 @@
 from psycopg import AsyncConnection
 from neo4j import AsyncDriver
 from typing import List, Tuple
+import logging
 from ..models.lab3_models import Lecture
 
 
@@ -10,6 +11,7 @@ class LectureRepository:
     def __init__(self, pg_conn: AsyncConnection, neo4j_driver: AsyncDriver):
         self.pg_conn = pg_conn
         self.neo4j_driver = neo4j_driver
+        self._log = logging.getLogger(__name__)
     
     async def _detect_schema(self) -> str:
         """Определить схему таблицы (PascalCase или snake_case)"""
@@ -27,18 +29,19 @@ class LectureRepository:
             return []
         
         schema = await self._detect_schema()
+        self._log.debug("lectures by course ids: n=%d schema=%s", len(course_ids), schema)
         
         if schema == "pascal":
             query = """
                 SELECT "Id", "Name", "Requirements", "Year", "CourseId"
                 FROM "Lectures"
-                WHERE "CourseId" = ANY($1)
+                WHERE "CourseId" = ANY(%s)
             """
         else:
             query = """
                 SELECT id, name, requirements, year, course_id
                 FROM lectures
-                WHERE course_id = ANY($1)
+                WHERE course_id = ANY(%s)
             """
         
         async with self.pg_conn.cursor() as cursor:
@@ -66,8 +69,8 @@ class LectureRepository:
             # Получаем студентов группы
             student_result = await session.run(
                 """
-                MATCH (g:Group {Id: $groupId})<-[:BELONGS_TO]-(s:Student)
-                RETURN s.Id as studentId
+                MATCH (s:Student)-[:BELONGS_TO]->(g:Group {id: $groupId})
+                RETURN s.id as studentId
                 """,
                 groupId=group_id
             )
@@ -77,12 +80,14 @@ class LectureRepository:
             # Получаем лекции, которые может посещать группа
             lecture_result = await session.run(
                 """
-                MATCH (g:Group {Id: $groupId})-[:CAN_ATTEND]->(l:Lecture)
-                RETURN l.Id as lectureId
+                MATCH (g:Group {id: $groupId})-[:HAS_LECTURE]->(l:Lecture)
+                RETURN l.id as lectureId
                 """,
                 groupId=group_id
             )
             lecture_records = await lecture_result.data()
             lecture_ids = [record["lectureId"] for record in lecture_records]
-            
+            self._log.debug("Neo4j group_details: students=%d lectures=%d", len(student_ids), len(lecture_ids))
             return student_ids, lecture_ids
+
+

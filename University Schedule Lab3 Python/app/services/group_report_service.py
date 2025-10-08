@@ -1,4 +1,5 @@
 from typing import Optional, Dict, List
+import logging
 from ..models.lab3_models import (
     GroupReportResponse, 
     CourseDTO, 
@@ -32,6 +33,7 @@ class GroupReportService:
         self.lecture_repo = lecture_repo
         self.schedule_repo = schedule_repo
         self.visits_repo = visits_repo
+        self._log = logging.getLogger(__name__)
     
     async def get_group_report(self, group_name: str) -> GroupReportResponse:
         """
@@ -43,7 +45,9 @@ class GroupReportService:
         5. Посчитать посещенные часы для каждого студента
         """
         # 1. Найти группу
+        self._log.debug("Lab3 start: group_name=%s", group_name)
         group = await self.group_repo.get_by_name(group_name)
+        self._log.debug("Group lookup -> %s", group.dict() if group else None)
         if not group:
             return GroupReportResponse(
                 CourseInfo=None,
@@ -53,6 +57,7 @@ class GroupReportService:
         
         # 2. Получить детали из Neo4j (ID студентов и лекций)
         student_ids, lecture_ids = await self.lecture_repo.get_group_details(group.id)
+        self._log.debug("Neo4j -> student_ids=%d, lecture_ids=%d", len(student_ids), len(lecture_ids))
         
         if not student_ids or not lecture_ids:
             return GroupReportResponse(
@@ -65,8 +70,9 @@ class GroupReportService:
         courses = await self.course_repo.get_by_lecture_ids_and_department(
             lecture_ids, 
             group.department_id
-        )
-        
+            )
+        self._log.debug("PG -> courses=%d; department_id=%s", len(courses), group.department_id)
+                
         if not courses:
             return GroupReportResponse(
                 CourseInfo=None,
@@ -77,10 +83,15 @@ class GroupReportService:
         # 4. Получить лекции для этих курсов
         course_ids = [course.id for course in courses]
         lectures = await self.lecture_repo.get_by_course_ids(course_ids)
+        self._log.debug("PG -> lectures=%d", len(lectures))
         
         # Фильтруем только те лекции, которые доступны группе
         lecture_ids_set = set(lecture_ids)
-        filtered_lectures = [lec for lec in lectures if lec.id in lecture_ids_set]
+        filtered_lectures = [
+            lec for lec in lectures
+            if lec.id in lecture_ids_set and bool(getattr(lec, "requirements", False))
+        ]
+        self._log.debug("Filtered lectures (requirements only)=%d", len(filtered_lectures))
         
         if not filtered_lectures:
             return GroupReportResponse(
@@ -94,21 +105,24 @@ class GroupReportService:
         schedules = await self.schedule_repo.get_by_lecture_and_group(
             filtered_lecture_ids,
             group.id
-        )
-        
+            )
+        self._log.debug("PG -> schedules=%d; sample_times=%s", len(schedules), [(getattr(s, "start_time", None), getattr(s, "end_time", None)) for s in schedules[:3]])
+                
         # Подсчет общих часов: каждое занятие = 2 часа
         all_hours = len(schedules) * 2
         
         # 6. Получить студентов
         students = await self.student_repo.get_by_ids(student_ids)
+        self._log.debug("Redis -> students=%d", len(students))
         
         # 7. Получить посещения
         schedule_ids = [sched.id for sched in schedules]
         visits = await self.visits_repo.get_by_schedule_and_students(
             schedule_ids,
             student_ids
-        )
-        
+            )
+        self._log.debug("PG -> visits=%d", len(visits))
+                
         # 8. Подсчитать посещенные часы для каждого студента
         # Группируем посещения по студентам
         visits_by_student: Dict[int, int] = {}
@@ -143,3 +157,5 @@ class GroupReportService:
             GroupInfo=group_info,
             Message=None
         )
+
+

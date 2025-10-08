@@ -1,5 +1,6 @@
 from psycopg import AsyncConnection
 from typing import List
+import logging
 from ..models.lab3_models import Schedule
 
 
@@ -8,6 +9,7 @@ class ScheduleRepository:
     
     def __init__(self, conn: AsyncConnection):
         self.conn = conn
+        self._log = logging.getLogger(__name__)
     
     async def _detect_schema(self) -> str:
         """Определить схему таблицы (PascalCase или snake_case)"""
@@ -29,18 +31,19 @@ class ScheduleRepository:
             return []
         
         schema = await self._detect_schema()
+        self._log.debug("schedule schema=%s lecture_ids=%d group_id=%s", schema, len(lecture_ids), group_id)
         
         if schema == "pascal":
             query = """
-                SELECT "Id", "LectureId", "GroupId", "Date"
+                SELECT "Id", "LectureId", "GroupId", "StartTime", "EndTime"
                 FROM "Schedules"
-                WHERE "LectureId" = ANY($1) AND "GroupId" = $2
+                WHERE "LectureId" = ANY(%s) AND "GroupId" = %s
             """
         else:
             query = """
-                SELECT id, lecture_id, group_id, date
+                SELECT id, lecture_id, group_id, start_time, end_time
                 FROM schedules
-                WHERE lecture_id = ANY($1) AND group_id = $2
+                WHERE lecture_id = ANY(%s) AND group_id = %s
             """
         
         async with self.conn.cursor() as cursor:
@@ -53,7 +56,8 @@ class ScheduleRepository:
                     Id=row[0],
                     LectureId=row[1],
                     GroupId=row[2],
-                    Date=row[3]
+                    start_time=row[3],
+                    end_time=row[4]
                 ))
             
             return schedules

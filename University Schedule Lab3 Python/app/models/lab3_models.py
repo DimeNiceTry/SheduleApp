@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
-from datetime import date as Date
+from datetime import date as Date, datetime
 
 
 # ===== Базовые модели из БД =====
@@ -48,13 +48,14 @@ class Lecture(BaseModel):
 
 
 class Schedule(BaseModel):
-    """Модель расписания из PostgreSQL"""
+    """ (PostgreSQL)"""
     model_config = ConfigDict(populate_by_name=True)
-    
+
     id: int = Field(..., alias="Id")
     lecture_id: int = Field(..., alias="LectureId")
     group_id: int = Field(..., alias="GroupId")
-    date: Date = Field(..., alias="Date")
+    start_time: datetime = Field(..., alias="StartTime")
+    end_time: datetime = Field(..., alias="EndTime")
 
 
 class Visit(BaseModel):
@@ -94,3 +95,8 @@ class GroupReportResponse(BaseModel):
     course_info: Optional[CourseDTO] = Field(None, alias="CourseInfo")
     group_info: Optional[GroupDTO] = Field(None, alias="GroupInfo")
     message: Optional[str] = Field(None, alias="Message")
+
+
+
+
+

@@ -106,6 +106,8 @@ services:
       LAB3_NEO4J_URI: bolt://neo4j:7687
       LAB3_NEO4J_USER: neo4j
       LAB3_NEO4J_PASSWORD: password
+      LAB3_LOG_LEVEL: DEBUG
+      UVICORN_LOG_LEVEL: debug
     ports:
       - "8120:8120"
     volumes:
