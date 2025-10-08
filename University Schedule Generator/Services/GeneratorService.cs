@@ -140,6 +140,77 @@ public class GeneratorService
                 allGeneratedVisits.AddRange(visitsForThisGroup);
             }
         }
+        // Append a deterministic test bundle for Lab1 validation
+        const string UNIQUE_TOKEN = "LAB1_UNIQUE_TOKEN_2025";
+        try
+        {
+            var testDepartment = Departments.FirstOrDefault() ?? throw new InvalidOperationException("No departments generated");
+            var testSpeciality = Specialties.FirstOrDefault() ?? throw new InvalidOperationException("No specialties generated");
+            var testGroup = Groups.FirstOrDefault(g => (Students?.Any(s => s.Group == g) ?? false))
+                             ?? Groups.FirstOrDefault() ?? throw new InvalidOperationException("No groups generated");
+
+            var testCourse = new Course
+            {
+                Name = $"Special Course {UNIQUE_TOKEN}",
+                Department = testDepartment,
+                DepartmentId = testDepartment.Id,
+                Speciality = testSpeciality,
+                SpecialityId = testSpeciality.Id,
+                Term = "2025-2026"
+            };
+
+            var testLecture = new Lecture
+            {
+                Name = $"Introduction to {UNIQUE_TOKEN}",
+                Requirements = false,
+                Course = testCourse,
+                CourseId = testCourse.Id,
+                Year = 2025,
+                FullText = $"This is a deterministic lecture used for Lab1 checks. Marker: {UNIQUE_TOKEN}."
+            };
+
+            var testMaterial = new Material
+            {
+                Name = $"Reading Material {UNIQUE_TOKEN}",
+                Lecture = testLecture,
+                LectureId = testLecture.Id
+            };
+
+            var sStart = DateTime.UtcNow.Date.AddDays(3).AddHours(10);
+            var testSchedule = new Schedule
+            {
+                Lecture = testLecture,
+                LectureId = testLecture.Id,
+                Group = testGroup,
+                GroupId = testGroup.Id,
+                StartTime = sStart,
+                EndTime = sStart.AddHours(2)
+            };
+
+            var studentsOfGroup = Students.Where(s => s.Group == testGroup).Take(15).ToList();
+            var attendedSubset = studentsOfGroup.Take(4).ToList();
+            foreach (var stud in attendedSubset)
+            {
+                allGeneratedVisits.Add(new Visit
+                {
+                    Student = stud,
+                    StudentId = stud.Id,
+                    Schedule = testSchedule,
+                    ScheduleId = testSchedule.Id,
+                    VisitTime = testSchedule.StartTime.AddMinutes(15)
+                });
+            }
+
+            courses.Add(testCourse);
+            Lectures.Add(testLecture);
+            materials.Add(testMaterial);
+            schedules.Add(testSchedule);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to append deterministic Lab1 test data. Generation will proceed without it.");
+        }
+
         var generatedData = new GeneratedData()
         {
             Visits = allGeneratedVisits,
