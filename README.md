@@ -17,7 +17,8 @@
 <img width="1257" height="667" alt="image" src="https://github.com/user-attachments/assets/73d52986-db69-4539-9174-5f74cb02fb32" />
 
 
-Физические хранилища:
+## Физические хранилища:
+
 ## Postgres
 <img width="1280" height="577" alt="image" src="https://github.com/user-attachments/assets/881b2686-1f3f-4989-9aaa-fe9bc118ca60" />
 
