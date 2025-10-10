@@ -7,7 +7,7 @@
 
 
 Физические хранилища:
-## Posthres
+## Postgres
 <img width="1280" height="577" alt="image" src="https://github.com/user-attachments/assets/881b2686-1f3f-4989-9aaa-fe9bc118ca60" />
 ## Elastic
 <img width="1886" height="775" alt="image" src="https://github.com/user-attachments/assets/0c5bbe70-cac8-4b64-98ef-f55499c0b6b7" />
@@ -16,9 +16,9 @@
 <img width="960" height="799" alt="image" src="https://github.com/user-attachments/assets/4a8e9c30-d229-483a-b73f-f098b0905260" />
 <img width="966" height="771" alt="image" src="https://github.com/user-attachments/assets/ef7f6dd1-a80f-4253-a518-fbd07d06a749" />
 
-
+## Redis
 <img width="548" height="910" alt="image" src="https://github.com/user-attachments/assets/8329920e-0fcd-4134-98d6-47424031662c" />
-
+## Neo4j
 <img width="1850" height="322" alt="image" src="https://github.com/user-attachments/assets/de99f4b2-ab49-4bab-adbb-6a9d227e6f8b" />
 
 
