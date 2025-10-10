@@ -5,10 +5,10 @@
 ## Диаграмы:
 
 
+<img width="531" height="479" alt="image_2025-10-08_19-20-49" src="https://github.com/user-attachments/assets/31bbec35-4070-41e1-a5c2-72eacd7b993a" />
+
 
 <img width="495" height="743" alt="image_2025-10-08_19-19-35" src="https://github.com/user-attachments/assets/e88b6b91-94b5-4e5e-b64a-1a802e70987e" />
-
-<img width="531" height="479" alt="image_2025-10-08_19-20-49" src="https://github.com/user-attachments/assets/31bbec35-4070-41e1-a5c2-72eacd7b993a" />
 
 ![Untitled](https://github.com/user-attachments/assets/6d778e2a-725c-48bd-a60b-f68ee109d2c3)
 
