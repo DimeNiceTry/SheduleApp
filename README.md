@@ -2,6 +2,28 @@
 
 Система для управления университетским расписанием с использованием различных типов баз данных.
 
+## Логическая схема данных:
+<img width="1257" height="667" alt="image" src="https://github.com/user-attachments/assets/73d52986-db69-4539-9174-5f74cb02fb32" />
+
+
+Физические хранилища:
+## Posthres
+<img width="1280" height="577" alt="image" src="https://github.com/user-attachments/assets/881b2686-1f3f-4989-9aaa-fe9bc118ca60" />
+## Elastic
+<img width="1886" height="775" alt="image" src="https://github.com/user-attachments/assets/0c5bbe70-cac8-4b64-98ef-f55499c0b6b7" />
+## Mongo
+<img width="982" height="241" alt="image" src="https://github.com/user-attachments/assets/505f3963-b8d1-4dbf-ad6c-217e6dd4ef7c" />
+<img width="960" height="799" alt="image" src="https://github.com/user-attachments/assets/4a8e9c30-d229-483a-b73f-f098b0905260" />
+<img width="966" height="771" alt="image" src="https://github.com/user-attachments/assets/ef7f6dd1-a80f-4253-a518-fbd07d06a749" />
+
+
+<img width="548" height="910" alt="image" src="https://github.com/user-attachments/assets/8329920e-0fcd-4134-98d6-47424031662c" />
+
+<img width="1850" height="322" alt="image" src="https://github.com/user-attachments/assets/de99f4b2-ab49-4bab-adbb-6a9d227e6f8b" />
+
+
+
+
 ## 🚀 Быстрый старт
 
 ```bash
