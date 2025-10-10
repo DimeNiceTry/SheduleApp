@@ -4,11 +4,12 @@
 
 ## Диаграмы:
 
-![Untitled](https://github.com/user-attachments/assets/85850949-2d30-41aa-a51f-4c6a94428502)
-<img width="531" height="479" alt="image_2025-10-08_19-20-49" src="https://github.com/user-attachments/assets/31bbec35-4070-41e1-a5c2-72eacd7b993a" />
+
+
 <img width="495" height="743" alt="image_2025-10-08_19-19-35" src="https://github.com/user-attachments/assets/e88b6b91-94b5-4e5e-b64a-1a802e70987e" />
 <img width="1872" height="717" alt="image_2025-10-08_19-41-07" src="https://github.com/user-attachments/assets/5ef1f872-3f75-445a-ae68-b8e8b83eb2fc" />
-
+![Untitled](https://github.com/user-attachments/assets/85850949-2d30-41aa-a51f-4c6a94428502)
+<img width="531" height="479" alt="image_2025-10-08_19-20-49" src="https://github.com/user-attachments/assets/31bbec35-4070-41e1-a5c2-72eacd7b993a" />
 
 ## Логическая схема данных:
 <img width="1257" height="667" alt="image" src="https://github.com/user-attachments/assets/73d52986-db69-4539-9174-5f74cb02fb32" />
