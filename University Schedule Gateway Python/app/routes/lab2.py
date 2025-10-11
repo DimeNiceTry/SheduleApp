@@ -39,7 +39,8 @@ async def proxy_lab2(
             "/lab2",
             params={
                 "year": year,
-                "courseName": courseName,
+                # Forward using Lab2's expected snake_case param name
+                "course_name": courseName,
             },
         )
     except httpx.RequestError as exc:
