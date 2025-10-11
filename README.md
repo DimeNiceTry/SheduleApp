@@ -2,6 +2,48 @@
 
 Система для управления университетским расписанием с использованием различных типов баз данных.
 
+## Диаграмы:
+
+
+<img width="531" height="479" alt="image_2025-10-08_19-20-49" src="https://github.com/user-attachments/assets/31bbec35-4070-41e1-a5c2-72eacd7b993a" />
+
+
+<img width="495" height="743" alt="image_2025-10-08_19-19-35" src="https://github.com/user-attachments/assets/e88b6b91-94b5-4e5e-b64a-1a802e70987e" />
+
+![Untitled](https://github.com/user-attachments/assets/6d778e2a-725c-48bd-a60b-f68ee109d2c3)
+
+<img width="1872" height="717" alt="image_2025-10-08_19-41-07" src="https://github.com/user-attachments/assets/5ef1f872-3f75-445a-ae68-b8e8b83eb2fc" />
+## Логическая схема данных:
+<img width="1257" height="667" alt="image" src="https://github.com/user-attachments/assets/73d52986-db69-4539-9174-5f74cb02fb32" />
+
+
+## Физические хранилища:
+
+## Postgres
+<img width="1280" height="577" alt="image" src="https://github.com/user-attachments/assets/881b2686-1f3f-4989-9aaa-fe9bc118ca60" />
+
+## Elastic
+<img width="1886" height="775" alt="image" src="https://github.com/user-attachments/assets/0c5bbe70-cac8-4b64-98ef-f55499c0b6b7" />
+
+## Mongo
+<img width="982" height="241" alt="image" src="https://github.com/user-attachments/assets/505f3963-b8d1-4dbf-ad6c-217e6dd4ef7c" />
+<img width="960" height="799" alt="image" src="https://github.com/user-attachments/assets/4a8e9c30-d229-483a-b73f-f098b0905260" />
+<img width="966" height="771" alt="image" src="https://github.com/user-attachments/assets/ef7f6dd1-a80f-4253-a518-fbd07d06a749" />
+
+## Redis
+<img width="548" height="910" alt="image" src="https://github.com/user-attachments/assets/8329920e-0fcd-4134-98d6-47424031662c" />
+
+## Neo4j
+<img width="1850" height="322" alt="image" src="https://github.com/user-attachments/assets/de99f4b2-ab49-4bab-adbb-6a9d227e6f8b" />
+
+## Пайплайны работ
+<img width="557" height="611" alt="image" src="https://github.com/user-attachments/assets/e4387724-ce0f-4155-9d94-41b9c5e72365" />
+<img width="484" height="393" alt="image" src="https://github.com/user-attachments/assets/f23fcbf9-0cef-45ca-899a-ae14d8de3505" />
+<img width="607" height="557" alt="image" src="https://github.com/user-attachments/assets/18fe54a0-43be-4a61-9721-9ddc1cf307ed" />
+
+
+
+
 ## 🚀 Быстрый старт
 
 ```bash
