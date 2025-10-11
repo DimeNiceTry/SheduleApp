@@ -17,7 +17,7 @@ def configure_http_client(client: httpx.AsyncClient) -> None:
 
 @router.get("/lab3", summary="Отчет по группе с информацией о посещаемости")
 async def proxy_lab3(
-    groupName: str = Query("ДЕФ-02-24", description="Название группы")
+    groupName: str = Query("ДО-02-23", description="Название группы")
 ):
     """
     Проксирует запрос к сервису Lab3 для получения отчета по группе.

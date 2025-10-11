@@ -66,7 +66,7 @@ async def root():
 
 @app.get("/lab3", response_model=GroupReportResponse, tags=["Lab3"])
 async def get_group_report(
-    groupName: str = Query("ДЕФ-02-24", description="Название группы")
+    groupName: str = Query("ДО-02-23", description="Название группы")
 ) -> GroupReportResponse:
     """
     Получить отчет по группе:

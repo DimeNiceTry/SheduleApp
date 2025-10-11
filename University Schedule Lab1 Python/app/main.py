@@ -69,7 +69,7 @@ async def health_check() -> dict[str, str]:
 )
 async def get_low_attendance_report(
     search_term: str = Query(
-        default="архитектура",
+        default="LAB1_UNIQUE_TOKEN_2025",
         alias="searchTerm",
         description="Term or phrase to match within lecture materials",
         examples=["архитектура", "программирование", "базы данных"]

@@ -16,7 +16,11 @@ def configure_http_client(client: httpx.AsyncClient) -> None:
 
 
 @router.get("/lab1")
-async def proxy_lab1(searchTerm: str, startDate: datetime, endDate: datetime):
+async def proxy_lab1(
+    searchTerm: str = "LAB1_UNIQUE_TOKEN_2025",
+    startDate: datetime = datetime(2025, 9, 1, 0, 0, 0),
+    endDate: datetime = datetime(2025, 12, 31, 23, 59, 59)
+    ):
     if _http_client is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Gateway HTTP client is not ready")
     try:
