@@ -4,11 +4,13 @@
 
 ## Диаграмы:
 
+##C4 Context
+<img width="1600" height="1300" alt="C4_context" src="https://github.com/user-attachments/assets/76b467b1-722e-4deb-8d14-9f8642ec7dc7" />
 
-<img width="531" height="479" alt="image_2025-10-08_19-20-49" src="https://github.com/user-attachments/assets/31bbec35-4070-41e1-a5c2-72eacd7b993a" />
 
+##C4 Container
+<img width="2370" height="1411" alt="C4_container" src="https://github.com/user-attachments/assets/678aff0d-0675-4885-a49f-19461428cd2e" />
 
-<img width="495" height="743" alt="image_2025-10-08_19-19-35" src="https://github.com/user-attachments/assets/e88b6b91-94b5-4e5e-b64a-1a802e70987e" />
 
 ![Untitled](https://github.com/user-attachments/assets/6d778e2a-725c-48bd-a60b-f68ee109d2c3)
 
