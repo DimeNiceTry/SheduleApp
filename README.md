@@ -4,11 +4,11 @@
 
 ## Диаграмы:
 
-##C4 Context
+## C4 Context
 <img width="1600" height="1300" alt="C4_context" src="https://github.com/user-attachments/assets/76b467b1-722e-4deb-8d14-9f8642ec7dc7" />
 
 
-##C4 Container
+## C4 Container
 <img width="2370" height="1411" alt="C4_container" src="https://github.com/user-attachments/assets/678aff0d-0675-4885-a49f-19461428cd2e" />
 
 
